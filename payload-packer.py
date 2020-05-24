@@ -102,7 +102,7 @@ def main():
             with open(opts.outfile, outmodes[opts.ascii_out]) as outfp:
                 outfp.write(encodings[opts.ascii_out](payload))
         else:
-            sys.stdout.write(encodings[opts.ascii_out](payload))
+            os.write(1,encodings[opts.ascii_out](payload))
     except Exception as err:
         print("Unable to write payload in file {0}:\n\t\t\t\t\t{1}".format(opts.outfile,err))
         sys.exit(6);
