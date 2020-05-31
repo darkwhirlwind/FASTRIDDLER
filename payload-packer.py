@@ -22,8 +22,7 @@ import argparse
 import binascii
 import sys
 import struct
-from typing import NoReturn
-from typing import Dict
+from typing import NoReturn,Dict,Callable
 import os
 
 def bytes_to_ascii(b:bytes) -> str:
