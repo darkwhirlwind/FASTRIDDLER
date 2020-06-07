@@ -1,0 +1,4 @@
+*resolve issue with nop's creating amibigous instruction decoding in a way we don't want (insure no 15byte alignment?)
+*fix ascii-in to accept MSF venoms hex format.
+*create shell-coder.py to send various templated payloads as shell code to payload packer.
+*test integration with PEDA, does --ip-offset work as excepted?
